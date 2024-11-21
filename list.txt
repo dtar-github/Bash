@@ -1,0 +1,3 @@
+Toe-Tac-Tic
+2048
+Wordle
