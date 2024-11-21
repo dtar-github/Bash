@@ -63,7 +63,7 @@ encode {string} {integer}
 Example:
 read plaintext
 read passkey
-encode \$plaintext \$passkey
+encode \"\$plaintext\" \$passkey
 
 
 
@@ -78,7 +78,7 @@ decode {string} {integer}
 Example:
 read ciphertext
 read passkey
-decode \$ciphertext \$passkey
+decode \"\$ciphertext\" \$passkey
 "
 read
 stty echo
