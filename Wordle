@@ -16,7 +16,7 @@ echo "<html><head><title>Bash Wordle Stats</title></head><body><h1>All-Time Word
 cd "$(dirname "$0")"
 if [ ! -f "dtar_functions" ]
 then
-curl "https://raw.githubusercontent.com/dtar-github/dtar-github.github.io/refs/heads/main/dtar_functions" > dtar_functions
+curl "https://raw.githubusercontent.com/dtar-github/bash/refs/heads/main/dtar_functions" > dtar_functions
 chmod +x dtar_functions
 fi
 source "dtar_functions"
