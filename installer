@@ -1,0 +1,76 @@
+install() {
+printf "\n\nInstalling \e[1;36m$1\e[0m...\n"
+curl -s "https://raw.githubusercontent.com/dtar-github/bash/refs/heads/main/$1" > $1
+chmod +x $1
+if [ "$(cat $1)" == "" ]
+then
+rm $1
+printf "\e[31mFailed to download.\e[0m\nTry checking your internet connection\n\n"
+exit
+else
+printf "\e[32mDone!\e[0m"
+fi
+}
+dtar_functions() {
+printf "\nPlease install \e[1;36mdtar_functions\e[0m to proceed.\n\nPress \e[1mEnter\e[0m to install \e[1;36mdtar_functions\e[0m in the following directory:\n$(dirname "$0")"
+read
+install dtar_functions
+}
+tput smcup
+cd "$(dirname "$0")"
+stty -echo
+curl "https://raw.githubusercontent.com/dtar-github/bash/refs/heads/main/list.txt" > list.txt
+while IFS= read -r line
+do
+installations+=("$line")
+done < list.txt
+if [ "${installations[@]}" == "" ]
+then
+installations=("Toe-Tac-Tic" "2048" "Wordle")
+fi
+rm list.txt
+clear
+printf "Welcome to the \e[1;31md\e[33mt\e[32ma\e[34mr \e[97mInstaller\e[0m!\n\n"
+if [ ! -f "dtar_functions" ]
+then
+dtar_functions
+else
+if [ "$(cat 'dtar_functions')" == "" ]
+then
+dtar_functions
+else
+read
+fi
+fi
+source "dtar_functions"
+while true
+do
+files=()
+for i in ${installations[@]}
+do
+if [ ! -f $i ]
+then
+files+=("$i")
+fi
+done
+if [ ${#files[@]} -eq 0 ]
+then
+menu "Choose a file to open!" installations[@]
+open ${installations[$output-1]}
+else
+output=0
+menu "Choose file to install:" files[@]
+tput cup ${#files[@]} 0
+install ${files[$output-1]}
+printf "\n\nWould you like to open \e[1;36m${files[$output-1]}\e[0m? (Y/N)\n"
+read -n1 key
+case $key in
+[Yy])
+open ${files[$output-1]}
+;;*)
+tput cup $((${#files[@]}+6)) 0
+printf "Thank You for downloading \e[1;36m${files[$output-1]}\e[0m"
+read
+esac
+fi
+done
