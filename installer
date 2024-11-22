@@ -15,6 +15,7 @@ dtar_functions() {
 printf "\nPlease install \e[1;36mdtar_functions\e[0m to proceed.\n\nPress \e[1mEnter\e[0m to install \e[1;36mdtar_functions\e[0m in the following directory:\n$(dirname "$0")"
 read
 install dtar_functions
+read
 }
 tput smcup
 cd "$(dirname "$0")"
