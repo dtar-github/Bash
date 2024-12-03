@@ -1,5 +1,5 @@
 install() {
-printf "\n\nInstalling \e[1;36m$1\e[0m...\n"
+printf "\n\n$2 \e[1;36m$1\e[0m...\n"
 curl -s "https://raw.githubusercontent.com/dtar-github/bash/refs/heads/main/$1" > $1
 chmod +x $1
 if [ "$(cat $1)" == "" ]
@@ -14,7 +14,7 @@ fi
 dtar_functions() {
 printf "\nPlease install \e[1;36mdtar_functions\e[0m to proceed.\n\nPress \e[1mEnter\e[0m to install \e[1;36mdtar_functions\e[0m in the following directory:\n$(dirname "$0")"
 read
-install dtar_functions
+install "dtar_functions" "Installing"
 read
 }
 tput smcup
@@ -44,6 +44,43 @@ read
 fi
 fi
 source "dtar_functions"
+files=()
+for i in ${installations[@]}
+do
+if [ ! -f $i ]
+then
+files+=("$i")
+fi
+done
+if [ ${#files[@]} -eq 0 ]
+then
+printf "Would you like to check if files are up to date? (Y/N)"
+read -n1 key
+case $key in
+[Yy])
+files="none"
+for i in ${installations[@]}
+do
+if [ "$(curl -s "https://raw.githubusercontent.com/dtar-github/bash/refs/heads/main/$i")" != "$(cat $i)" ]
+then
+files=$i
+clear
+printf "\e[1;36m$i\e[0m is not up to date.\nWould you like to update \e[1;36m$i\e[0m? (Y/N)"
+read -n1 output
+case $output in
+[Yy])
+install $i "Updating"
+read
+esac
+fi
+done
+if [ "$files" == "none" ]
+then
+echo
+read -p "All files are up to date!"
+fi
+esac
+fi
 while true
 do
 files=()
@@ -62,7 +99,7 @@ else
 output=0
 menu "Choose file to install:" files[@]
 tput cup ${#files[@]} 0
-install ${files[$output-1]}
+install ${files[$output-1]} "Installing"
 printf "\n\nWould you like to open \e[1;36m${files[$output-1]}\e[0m? (Y/N)\n"
 read -n1 key
 case $key in
