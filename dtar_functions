@@ -57,13 +57,13 @@ Encodes a string with an integer passkey
 Can only encode lowercase letters
 
 Parameters:
-encode [message] [passkey]
-encode {string} {integer}
+encode [message] [passkey] [\"-string\" or \"-integer\"] [custom cipher]
+encode {string} {integer or string} {flag} {array}
 
 Example:
 read plaintext
 read passkey
-encode \"\$plaintext\" \$passkey
+encode \"\$plaintext\" \"\$passkey\" -string
 
 
 
@@ -72,13 +72,13 @@ Deocdes a string with an integer passkey
 Only decodes into lowercase letters
 
 Parameters:
-decode [encoded message] [passkey]
-decode {string} {integer}
+decode [encoded message] [passkey] [\"-string\" or \"-integer\"] [custom cipher]
+decode {string} {integer or string} {flag} {array}
 
 Example:
 read ciphertext
 read passkey
-decode \"\$ciphertext\" \$passkey
+decode \"\$ciphertext\" \"\$passkey\" -string
 "
 read
 stty echo
@@ -153,7 +153,7 @@ index() {
 index=()
 for i in ${!array[@]}
 do
-if [ ${array[$i]} == $1 ]
+if [ "${array[$i]}" == "$1" ]
 then
 index+=($i)
 fi
@@ -161,10 +161,32 @@ done
 echo ${index[@]}
 }
 encode() {
+if [ "$4" != "" ]
+then
+array=($4)
+else
 array=(- a b c d e f g h i j k l m n o p q r s t u v w x y z)
+fi
 cipher=()
 plain=$1
+if [ "$3" == "-string" ] || [[ "$2" =~ [^0-9] ]]
+then
+key=0
+for i in $(seq ${#2})
+do
+index=$(index ${2:i-1:1})
+if [ "${index[@]}" != "" ]
+then
+key=$(echo "$key+${index[0]}*${#array[@]}^($i-1)" | bc)
+fi
+done
+else
 key=$2
+fi
+if [ "$3" == "-integer" ] && [[ "$2" =~ [^0-9] ]]
+then
+key=0
+fi
 for i in $(seq ${#plain})
 do
 if [ "${plain:$i-1:1}" == " " ]
@@ -173,15 +195,20 @@ index=0
 else
 index=$(index ${plain:$i-1:1})
 fi
+if [ "${index[@]}" == "" ]
+then
+cipher=(0 ${cipher[@]})
+else
 cipher=($(echo ${index[0]}*$key | bc) ${cipher[@]})
+fi
 done
 out=""
 i=0
 while [ ${cipher[$i]} -gt 0 ] || [ $i -lt ${#plain} ]
 do
 ((i++))
-mod=$(echo ${cipher[$i-1]}%27 | bc)
-num=$(echo ${cipher[$i-1]}/27 | bc)
+mod=$(echo ${cipher[$i-1]}%${#array[@]} | bc)
+num=$(echo ${cipher[$i-1]}/${#array[@]} | bc)
 cipher[$i-1]=$mod
 cipher[$i]=$((${cipher[$i]}+$num))
 letter=${cipher[$i-1]}
@@ -190,10 +217,32 @@ done
 echo $out
 }
 decode() {
+if [ "$4" != "" ]
+then
+array=($4)
+else
 array=(- a b c d e f g h i j k l m n o p q r s t u v w x y z)
+fi
 plain=(0)
 cipher=$1
+if [ "$3" == "-string" ] || [[ "$2" =~ [^0-9] ]]
+then
+key=0
+for i in $(seq ${#2})
+do
+index=$(index ${2:i-1:1})
+if [ "${index[@]}" != "" ]
+then
+key=$(echo "$key+${index[0]}*${#array[@]}^($i-1)" | bc)
+fi
+done
+else
 key=$2
+fi
+if [ "$3" == "-integer" ] && [[ "$2" =~ [^0-9] ]]
+then
+key=0
+fi
 num=0
 out=""
 for i in $(seq ${#cipher})
@@ -204,8 +253,13 @@ index=0
 else
 index=$(index ${cipher:$i-1:1})
 fi
+if [ "${index[@]}" == "" ]
+then
+plain+=(0)
+else
 plain+=(${index[0]})
-index=$(($num*27+${plain[$i]}))
+fi
+index=$(($num*${#array[@]}+${plain[$i]}))
 num=$(($index%$key))
 index=$(($index-$num))
 index=$(($index/$key))
