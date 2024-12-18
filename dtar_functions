@@ -85,7 +85,7 @@ stty echo
 fi
 menu() {
 clear
-echo $1
+printf "\e[1m$1\n"
 options=(${!2})
 functions=(${!3})
 chars=()
@@ -103,7 +103,7 @@ else
 new_option="$new_option${option:n:1}"
 fi
 done
-echo $new_option
+printf "\e[0m$new_option\n"
 done
 menu=1
 while true
