@@ -698,7 +698,7 @@ done
 start() {
 stty echo
 clear
-games=("Tic-Tac-Toe" "Tic-Tac-Toe_4x4" "Toe-Tac-Tic" "Toe-Tac-BOX!" "Super_Tic-Tac-Toe" "3-Player_Tic-Tac-Toe" "3-Player_Tic-Tac-BOX!" "Gravity")
+games=("Tic-Tac-Toe" "Tic-Tac-Toe_4x4" "Toe-Tac-Tic" "Toe-Tac-BOX!" "Super_Tic-Tac-Toe" "3-Player_Tic-Tac-Toe" "3-Player_Tic-Tac-BOX!" "Gravity" "Exit_Game")
 output=0
 menu "Choose a game:" games[@]
 clear
