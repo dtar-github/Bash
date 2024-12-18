@@ -1,0 +1,1 @@
+mkdir -p ~/Desktop/dtar-bash;mv ~/Downloads/installer ~/Desktop/dtar-bash;cd ~/Desktop/dtar-bash;chmod +x installer;./installer
