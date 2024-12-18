@@ -215,4 +215,12 @@ col=1
 word=""
 fi
 done
+output=0
+stuff=("Play_Again" "Exit")
+menu "Wordle" stuff[@]
+if [ $output -eq 2 ]
+then
+echo
+exit
+fi
 done
