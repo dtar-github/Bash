@@ -31,7 +31,18 @@ installations=("Toe-Tac-Tic" "2048" "Wordle")
 fi
 rm list.txt
 clear
-printf "Welcome to the \e[1;31md\e[33mt\e[32ma\e[34mr \e[97mInstaller\e[0m!\n\n"
+printf "Welcome to the \e[1;31md\e[33mt\e[32ma\e[34mr \e[0;1mInstaller\e[0m!\n\n"
+if [ "$(uname)" == "Darwin" ]
+then
+if [ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" != "Dark" ]
+then
+echo "This interface is made for dark mode!
+Please change to dark mode for a better experience."
+fi
+else
+echo "Warning! This script was made for MacOS zsh.
+It has not been tested on other operating systems."
+fi
 if [ ! -f "dtar_functions" ]
 then
 dtar_functions
