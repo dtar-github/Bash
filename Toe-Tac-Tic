@@ -534,7 +534,7 @@ move 5
 done
 }
 game6() {
-echo "Get three in a row to win"
+echo "Get four in a row or four in a box to win"
 echo
 echo "Press enter to continue"
 read -s
