@@ -3,9 +3,9 @@ printf "\n\n$2 \e[1;36m$1\e[0m...\n"
 name=$1
 if [ "${name: -5}" == ".html" ]
 then
-curl -s "https://raw.githubusercontent.com/dtar-github/dtar-github.github.io/refs/heads/main/$1" > $1
+curl --progress-bar -o $1 "https://raw.githubusercontent.com/dtar-github/dtar-github.github.io/refs/heads/main/$1"
 else
-curl -s "https://raw.githubusercontent.com/dtar-github/bash/refs/heads/main/$1" > $1
+curl --progress-bar -o $1 "https://raw.githubusercontent.com/dtar-github/bash/refs/heads/main/$1"
 chmod +x $1
 fi
 if [ "$(cat $1)" == "" ]
