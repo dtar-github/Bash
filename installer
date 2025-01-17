@@ -1,7 +1,7 @@
 install() {
 printf "\n\n$2 \e[1;36m$1\e[0m...\n"
 name=$1
-if [ "${name:-5}" == ".html" ]
+if [ "${name: -5}" == ".html" ]
 then
 curl -s "https://raw.githubusercontent.com/dtar-github/dtar-github.github.io/refs/heads/main/$1" > $1
 else
