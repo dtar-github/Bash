@@ -78,7 +78,13 @@ case $key in
 files="none"
 for i in ${installations[@]}
 do
-if [ "$(curl -s "https://raw.githubusercontent.com/dtar-github/bash/refs/heads/main/$i")" != "$(cat $i)" ]
+if [ "${i: -5}" == ".html" ]
+then
+name="https://raw.githubusercontent.com/dtar-github/dtar-github.github.io/refs/heads/main/$i"
+else
+name="https://raw.githubusercontent.com/dtar-github/bash/refs/heads/main/$i"
+fi
+if [ "$(curl -s "$name")" != "$(cat $i)" ]
 then
 files=$i
 clear
