@@ -18,10 +18,16 @@ printf "\e[32mDone!\e[0m"
 fi
 }
 dtar_functions() {
+if [ "$1" == "Updating" ]
+then
+printf "\nPlease update \e[1;36mdtar_functions\e[0m.\n\nPress \e[1mEnter\e[0m to update\e[0m"
+else
 printf "\nPlease install \e[1;36mdtar_functions\e[0m to proceed.\n\nPress \e[1mEnter\e[0m to install \e[1;36mdtar_functions\e[0m in the following directory:\n$(dirname "$(realpath "$0")")"
+fi
 read
-install "dtar_functions" "Installing"
+install "dtar_functions" "$1"
 read
+printf "\n\n"
 }
 tput smcup
 cd "$(dirname "$0")"
@@ -51,11 +57,11 @@ It has not been tested on other operating systems."
 fi
 if [ ! -f "dtar_functions" ]
 then
-dtar_functions
+dtar_functions "Installing"
 else
-if [ "$(cat 'dtar_functions')" == "" ]
+if [ "$(cat 'dtar_functions')" != "$(curl -s 'https://raw.githubusercontent.com/dtar-github/bash/refs/heads/main/dtar_functions')" ]
 then
-dtar_functions
+dtar_functions "Updating"
 else
 read
 fi
