@@ -67,6 +67,16 @@ read
 fi
 fi
 source "dtar_functions"
+if [ "$(cat 'installer')" != "$(curl -s 'https://raw.githubusercontent.com/dtar-github/bash/refs/heads/main/installer')" ]
+then
+read -p "Installer is not up to date. Press enter to update."
+install "installer" "Updating"
+echo
+read -p "Press enter to relaunch."
+clear
+./installer
+exit
+fi
 files=()
 for i in ${installations[@]}
 do
