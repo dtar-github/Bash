@@ -1,0 +1,56 @@
+clear
+read -p "y=" equation
+read -p "Lower Bound: " lower
+read -p "Upper Bound: " upper
+tput smcup
+padding=$((${#upper}+${#lower}))
+rows=$(tput lines)
+cols=$(tput cols)
+rows=$(($rows-3))
+cols=$(($cols-$padding))
+gap=$(echo "($upper - $lower) / ($cols - 1)" | bc -l)
+x=$lower
+while [ "$(echo "$x <= $upper" | bc)" == "1" ]
+do
+y+=($(echo "x=$x;$equation" | bc -l))
+x=$(echo "$x+$gap" | bc -l)
+done
+min=$y
+max=$y
+for i in ${y[@]}
+do
+if [ "$(echo "$i < $min" | bc)" == "1" ]
+then
+min=$i
+fi
+if [ "$(echo "$i > $max" | bc)" == "1" ]
+then
+max=$i
+fi
+done
+min=$(echo "scale=0;($min-0.5)/1" | bc)
+max=$(echo "scale=0;($max+0.5)/1" | bc)
+clear
+echo "y=$equation"
+tput cup 1 $padding
+echo $lower
+tput cup 1 $(($cols-${#upper}+$padding))
+echo $upper
+echo
+echo $max
+tput cup $(($rows+2)) 0
+printf -- $min
+for col in $(seq 1 $cols)
+do
+tput cup $(($rows+1)) $(($col+$padding))
+row=0
+val=$min
+while [ "$(echo "$val <= ${y[$col-1]}" | bc)" == "1" ]
+do
+((row++))
+tput cup $(($rows-$row+3)) $(($col+$padding))
+printf "█"
+val=$(echo "$val + ($max - $min) / ($rows - 1)" | bc -l)
+done
+done
+read
