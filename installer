@@ -91,6 +91,7 @@ printf "Would you like to check if files are up to date? (Y/N)"
 read -n1 key
 case $key in
 [Yy])
+printf "\nChecking...\n"
 files="none"
 for i in ${installations[@]}
 do
@@ -111,6 +112,7 @@ case $output in
 install $i "Updating"
 read
 esac
+printf "\nLoading...\n"
 fi
 done
 if [ "$files" == "none" ]
