@@ -1,6 +1,7 @@
 Toe-Tac-Tic
 2048
 Wordle
+graph
 Spaceship_Battle.html
 Block_Blast.html
 Portal.html
