@@ -22,8 +22,8 @@ then
 curl "https://raw.githubusercontent.com/dtar-github/bash/refs/heads/main/dtar_functions" > dtar_functions
 chmod +x dtar_functions
 fi
-source "dtar_functions"
 fi
+source "dtar_functions"
 cd "$(dirname "$0")"
 clear
 mkdir -p "Wordle_Data"
