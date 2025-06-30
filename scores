@@ -1,0 +1,158 @@
+add() {
+stty echo
+read -p "Enter game name: " game
+stty -echo
+game=$(echo "$game" | sed 's/ /_/g')
+if [ -f "$game" ]
+then
+read -p "That game already exists"
+else
+echo > "$game"
+read -p 'Game "'"$game"'" Added'
+fi
+games=($(ls))
+}
+choose() {
+menu "Choose a Game:" ${games[@]} "\e[4mMain Menu\e[0m"
+game="${games[$output-1]}"
+clear
+}
+score() {
+choose
+if [ "$game" = "" ]
+then
+return
+fi
+printf "\e[1m$(echo "$game" | sed 's/_/ /g')\e[0m\n"
+date
+stty echo
+read -p "Enter New Score: " score
+stty -echo
+score=$(echo "$score" | bc)
+if [ "$(cat "$game")" == "" ]
+then
+date +%F > "$game"
+else
+date +%F >> "$game"
+fi
+echo $score >> "$game"
+scores=()
+i=0
+while IFS= read -r line
+do
+i=$((1 - $i))
+if [ $i -eq 0 ]
+then
+scores+=("$line")
+fi
+done < "$game"
+high=$scores
+for i in ${scores[@]}
+do
+if [ "$(echo "$i>$high" | bc)" == "1" ]
+then
+high=$i
+fi
+done
+if [ "${scores[${#scores[@]}-1]}" == "$high" ]
+then
+read -p "New High Score!"
+else
+read -p "High Score: $high"
+fi
+}
+display() {
+tput rmcup
+for game in ${games[@]}
+do
+printf "\e[1m$game\e[0m\n\n"
+scores=()
+dates=()
+i=0
+while IFS= read -r line
+do
+i=$((1 - $i))
+if [ $i -eq 0 ]
+then
+scores+=("$line")
+else
+dates+=("$line")
+fi
+done < "$game"
+high=$scores
+for i in $(seq 0 $((${#scores[@]}-1)))
+do
+printf "\e[4m${dates[i]}\e[0m: ${scores[i]}"
+if [ "$(echo "${scores[i]}>$high" | bc)" == "1" ]
+then
+printf "  \e[1mNew Best!\e[0m"
+high=${scores[i]}
+fi
+printf "\n"
+done
+printf "\n\n"
+done
+read
+}
+edit () {
+choose
+if [ "$game" = "" ]
+then
+return
+fi
+open "$game"
+}
+remove() {
+choose
+if [ "$game" = "" ]
+then
+return
+fi
+printf "Are you sure you want to delete $game? (Y/N)\n"
+read -n1 key
+case $key in
+[Yy])
+rm $game
+read -p "$game was permanently deleted"
+esac
+}
+cd "$(dirname "$0")"
+if [ -f "~/dtar_functions" ]
+then
+source "~/dtar_functions"
+else
+if [ ! -f "dtar_functions" ]
+then
+curl "https://raw.githubusercontent.com/dtar-github/bash/refs/heads/main/dtar_functions" > dtar_functions
+chmod +x dtar_functions
+fi
+source "dtar_functions"
+fi
+mkdir "score_data"
+cd "score_data"
+games=($(ls))
+while true
+do
+tput smcup
+stty echo
+if [ "$games" == "" ]
+then
+menu "Score Tracker" "Add_Game" "Exit"
+clear
+case $output in
+1) add;;
+2) exit
+esac
+else
+menu "Score Tracker" "Add_Score" "View_Scores" "Edit_Scores" "Add_Game" "Remove_Game" "Exit"
+clear
+case $output in
+1) score;;
+2) display;;
+3) edit;;
+4) add;;
+5) remove;;
+6) exit
+esac
+fi
+done
