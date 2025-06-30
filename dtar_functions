@@ -2,21 +2,19 @@ if [ "${BASH_SOURCE[0]}" == "${0}" ]
 then
 clear
 stty -echo
-echo "Functions and descriptions:
+echo 'Functions and descriptions:
 
 menu()
-Press w and s to move up and down
-Press any other key to select
+Press Up and Down Arrows to move up and down
+Press Enter to select
 
 Paramerters:
 menu [title] [options]
 menu {string} {string...}
 
 Example:
-output=0
-options=(\"Option A\" \"Option B\" \"Option C\")
-menu \"Choose An Option:\" options[@]
-case \$output in
+menu "Choose An Option:" "Option A" "Option B" "Option C"
+case $output in
 1) functionA;;
 2) functionB;;
 3) functionC;;
@@ -38,17 +36,17 @@ fullscreen
 
 
 index()
-Gets the index of an item in an array named \"array\"
+Gets the index of an item in an array named "array"
 
 Parameters:
 index [item]
 index {string}
 
 Example:
-array=(\"itemA\" \"itemB\" \"itemC\")
-item=\${array[\$((\$RANDOM % \${#array[@]}))]}
-index=\$(index \"\$item\")
-echo \"Item \${index[0]} in the array is '\$item'\"
+array=("itemA" "itemB" "itemC")
+item=${array[$(($RANDOM % ${#array[@]}))]}
+index=$(index "$item")
+echo "Item ${index[0]} in the array is '\$item'"
 
 
 
@@ -57,13 +55,13 @@ Encodes a string with an integer passkey
 Can only encode lowercase letters
 
 Parameters:
-encode [message] [passkey] [\"-string\" or \"-integer\"] [custom cipher]
+encode [message] [passkey] ["-string" or "-integer"] [custom cipher]
 encode {string} {integer or string} {flag} {array}
 
 Example:
 read plaintext
 read passkey
-encode \"\$plaintext\" \"\$passkey\" -string
+encode "$plaintext" "$passkey" -string
 
 
 
@@ -72,22 +70,20 @@ Deocdes a string with an integer passkey
 Only decodes into lowercase letters
 
 Parameters:
-decode [encoded message] [passkey] [\"-string\" or \"-integer\"] [custom cipher]
+decode [encoded message] [passkey] ["-string" or "-integer"] [custom cipher]
 decode {string} {integer or string} {flag} {array}
 
 Example:
 read ciphertext
 read passkey
-decode \"\$ciphertext\" \"\$passkey\" -string
-"
+decode "$ciphertext" "$passkey" -string'
 read
 stty echo
 fi
 menu() {
 clear
 printf "\e[1m$1\n"
-options=(${!2})
-functions=(${!3})
+options=("${@:2}")
 chars=()
 for i in ${!options[@]}
 do
@@ -109,9 +105,9 @@ menu=1
 while true
 do
 tput cup $menu ${chars[$((menu - 1))]}
-read -sn1 read
-case $read in
-"w")
+read -sn3 read
+case "$read" in
+$'\e[A')
 if [ $menu = 1 ]
 then
 menu=${#options[@]}
@@ -119,7 +115,7 @@ else
 ((menu--))
 fi
 ;;
-"s")
+$'\e[B')
 if [ $menu = ${#options[@]} ]
 then
 menu=1
@@ -127,7 +123,7 @@ else
 ((menu++))
 fi
 ;;
-*)
+"")
 output=$menu
 return
 esac
