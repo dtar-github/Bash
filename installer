@@ -22,7 +22,7 @@ if [ "$1" == "Updating" ]
 then
 printf "\nPlease update \e[1;36mdtar_functions\e[0m.\n\nPress \e[1mEnter\e[0m to update\e[0m"
 else
-printf "\nPlease install \e[1;36mdtar_functions\e[0m to proceed.\n\nPress \e[1mEnter\e[0m to install \e[1;36mdtar_functions\e[0m in the following directory:\n$(dirname "$(realpath "$0")")"
+printf "\nPlease install \e[1;36mdtar_functions\e[0m to proceed.\n\nPress \e[1mEnter\e[0m to install \e[1;36mdtar_functions\e[0m in the following directory:\n$HOME"
 fi
 read
 install "dtar_functions" "$1"
@@ -55,6 +55,7 @@ else
 echo "Warning! This script was made for MacOS zsh.
 It has not been tested on other operating systems."
 fi
+cd ~
 if [ ! -f "dtar_functions" ]
 then
 dtar_functions "Installing"
@@ -67,6 +68,7 @@ read
 fi
 fi
 source "dtar_functions"
+cd "$(dirname "$0")"
 if [ "$(cat 'installer')" != "$(curl -s 'https://raw.githubusercontent.com/dtar-github/bash/refs/heads/main/installer')" ]
 then
 read -p "Installer is not up to date. Press enter to update."
