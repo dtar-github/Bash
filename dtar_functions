@@ -92,7 +92,7 @@ new_option=""
 chars+=(${#option})
 for (( n=0; n<${#option}; n++ ))
 do
-if [ ${option:n:1} = "_" ]
+if [ "${option:n:1}" = "_" ]
 then
 new_option="$new_option "
 else
