@@ -134,11 +134,10 @@ fi
 done
 if [ ${#files[@]} -eq 0 ]
 then
-menu "Choose a file to open!" installations[@]
+menu "Choose a file to open!" ${installations[@]}
 open ${installations[$output-1]}
 else
-output=0
-menu "Choose file to install:" files[@]
+menu "Choose file to install:" ${files[@]}
 tput cup ${#files[@]} 0
 install ${files[$output-1]} "Installing"
 printf "\n\nWould you like to open \e[1;36m${files[$output-1]}\e[0m? (Y/N)\n"
