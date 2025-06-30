@@ -215,9 +215,7 @@ col=1
 word=""
 fi
 done
-output=0
-stuff=("Play_Again" "Exit")
-menu "Wordle" stuff[@]
+menu "Wordle" "Play_Again" "Exit"
 if [ $output -eq 2 ]
 then
 echo
